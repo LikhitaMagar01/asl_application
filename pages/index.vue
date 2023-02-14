@@ -19,16 +19,17 @@
                         d="M4 6h16M4 12h16M4 18h16"
                     />
                 </svg>
-                <div
-                    class="hidden lg:inline-flex text-sm lg:text-base text-white space-x-4 lg:space-x-8 font-primary"
-                >
-                    <a href="#">Home</a>
-                    <a href="#">Features</a>
-                    <a href="#">Screenshots</a>
-                    <a href="#">Testimonial</a>
-                    <a href="#">Plans</a>
-                    <a href="#">Download</a>
-                    <a href="#">Contact</a>
+                <div>
+                    <a
+                        href="#"
+                        class="mr-4 px-4 py-3 text-white border-2 border-white rounded-full font-bold uppercase font-primary hover:shadow-md"
+                        >Sign In</a
+                    >
+                    <a
+                        href="#"
+                        class=" bg-white px-4 py-3 text-blue-500 rounded-full font-bold font-primary"
+                        >Sign Up</a
+                    >
                 </div>
             </nav>
         </header>
