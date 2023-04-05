@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "190488551729",
+    "project_id": "signin-asl",
+    "storage_bucket": "signin-asl.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:190488551729:android:0eb48d2e38b659b3775010",
+        "android_client_info": {
+          "package_name": "com.example.asl_application"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "190488551729-r5e41mqdcvq390pfh2ur8pn6c4n0h7bv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBt1zVbf9RxXqKTSgxnG8cUbR-XvNYScuY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "190488551729-r5e41mqdcvq390pfh2ur8pn6c4n0h7bv.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
