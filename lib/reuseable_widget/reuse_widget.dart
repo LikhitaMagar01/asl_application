@@ -66,3 +66,24 @@ Container signInSignUpButton(
     ),
   );
 }
+
+Widget build(BuildContext context) {
+  return Scaffold(
+    body: Center(
+      child: ElevatedButton(
+        onPressed: () {
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Container(
+              height: 90,
+              decoration: BoxDecoration(color: Color(0xFFC72C41),
+              ),
+              child: Text("Flutter default snackbar"),
+            ),
+            behavior: SnackBarBehavior.floating,
+          ));
+        },
+        child: const Text("show message"),
+      ),
+    ),
+  );
+}

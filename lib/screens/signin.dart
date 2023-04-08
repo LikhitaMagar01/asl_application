@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:sign_language_app/screens/signup.dart';
 import '../reuseable_widget/reuse_widget.dart';
@@ -43,7 +44,18 @@ class _SignInScreenState extends State<SignInScreen> {
                   height: 20,
                 ),
                 signInSignUpButton(context, true, () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context)=> const HomeScreen()));
+                  FirebaseAuth.instance
+                      .signInWithEmailAndPassword(
+                          email: _emailTextController.text,
+                          password: _passwordTextController.text)
+                      .then((value) {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const HomeScreen()));
+                  }).onError((error, stackTrace) {
+                    print("Error, ${error.toString()}");
+                  });
                 }),
                 signUpOption()
               ],
@@ -54,15 +66,16 @@ class _SignInScreenState extends State<SignInScreen> {
     );
   }
 
-  Row signUpOption(){
+  Row signUpOption() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         const Text("Don't Have an Account?",
-        style: TextStyle(color: Colors.white70)),
+            style: TextStyle(color: Colors.white70)),
         GestureDetector(
-          onTap: (){
-            Navigator.push(context, MaterialPageRoute(builder: (context)=> const SignUpScreen()));
+          onTap: () {
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => const SignUpScreen()));
           },
           child: const Text(
             "Sign Up",
