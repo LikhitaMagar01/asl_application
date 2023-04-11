@@ -1,9 +1,8 @@
 import 'package:camera/camera.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:sign_language_app/main.dart';
-import 'package:sign_language_app/screens/signin.dart';
-import 'package:sign_language_app/main.dart';
+import 'package:tflite/tflite.dart';
+
+import '../main.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -13,57 +12,94 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  CameraImage? cameraImage;
-  CameraController? cameraController;
-  String output = '';
+  late CameraController controller;
+  CameraImage? _cameraImage;
+  String output = "";
+
+  loadModel() async {
+    try {
+      await Tflite.loadModel(model: "assets/model.tflite", labels: "assets/labels.txt");
+    } catch (e) {}
+  }
 
   loadCamera() {
-    cameraController = CameraController(cameras![0], ResolutionPreset.medium);
-    cameraController!.initialize().then((value) {
-      if (!mounted) {
-        return;
-      } else {
-        setState(() {
-          cameraController!.startImageStream((ImageStream) {
-            cameraImage = ImageStream;
-            runModel();
-          });
+    controller = CameraController(cameras![0], ResolutionPreset.medium);
+    controller.initialize().then((value) {
+      if (!mounted) return;
+      setState(() {
+        controller.startImageStream((imageStream) {
+          _cameraImage = imageStream;
+          runModel();
         });
-      }
+      });
     });
   }
 
   runModel() async {
-    if (cameraImage != null) {}
+    if (_cameraImage != null) {
+      var predictions = await Tflite.runModelOnFrame(
+        bytesList: _cameraImage!.planes.map((e) => e.bytes).toList(),
+        imageHeight: _cameraImage!.height,
+        imageWidth: _cameraImage!.width,
+        imageMean: 127.5,
+        imageStd: 127.5,
+        rotation: 90,
+        numResults: 2,
+        threshold: 0.1,
+        asynch: true,
+      );
+      for (var element in predictions!) {
+        setState(() {
+          output = element['label'];
+        });
+      }
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    loadCamera();
+    loadModel();
+  }
+
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('American Sign Language'),
+        title: const Text("ML"),
       ),
       body: Center(
-        child: Column(children: <Widget>[
-          IconButton(
-            onPressed: () {},
-            icon: const Icon(Icons.camera_alt),
-            iconSize: 50,
-          )
-        ]),
-        // ElevatedButton(
-        //   child: const Text("Logout"),
-        //   onPressed: () {
-        //     FirebaseAuth.instance.signOut().then((value) {
-        //       print("signout");
-        //       Navigator.push(
-        //           context,
-        //           MaterialPageRoute(
-        //               builder: (context) => const SignInScreen()));
-        //     });
-        //   },
-        // ),
-      ),
+          child: controller.value.isInitialized
+              ? Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: AspectRatio(
+                        aspectRatio: 4 / 3,
+                        child: CameraPreview(controller),
+                      ),
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Text("Prediction:   "),
+                        Text(
+                          output.substring(output.length - 1),
+                          style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
+                        ),
+                      ],
+                    ),
+                  ],
+                )
+              : const Text("Camera controller not initialized")),
     );
   }
 }
